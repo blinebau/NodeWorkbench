@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Hello World</title>
+    <script src="https://unpkg.com/react@16/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6.15.0/babel.min.js"></script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="text/babel">
+      class Toggle extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {isToggleOn: true};
+
+          this.handleClick = this.handleClick.bind(this);
+        }
+
+        handleClick() {
+          this.setState(prevState => ({
+            isToggleOn: !prevState.isToggleOn
+          }));
+        }
+
+        render() {
+          return (
+            <button onClick={this.handleClick}>
+              {this.state.isToggleOn ? 'ON' : 'OFF'}
+            </button>
+          );
+        }
+      }
+
+      function Welcome(props) {
+        return <h1>Hello {props.name}!</h1>
+      }
+
+      class Clock extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {date: new Date()};
+        }
+
+        //LifeCycle Hook
+        //Special method: will run after the component output is rendered
+        componentDidMount() {
+          this.timerID = setInterval(() => this.tick(), 1000);
+        }
+
+        //LifeCycle Hook
+        componentWillUnmount() {
+          clearInterval(this.timerID);
+        }
+
+        tick() {
+          //Must use setState() to re-render component
+          //This will call the classes render() method
+          this.setState({date: new Date()});
+        }
+
+        render() {
+          return (
+            <div>
+              <Welcome name="Bryan"/>
+              <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+            </div>
+          );
+        }
+      }
+
+      function UserGreeting(props) {
+        return <h1>Welcome back!</h1>;
+      }
+
+      function GuestGreeting(props) {
+        return <h1>Please sign up.</h1>;
+      }
+
+      function Greetings(props) {
+        const isLoggedIn = props.isLoggedIn;
+        if(isLoggedIn) {
+          return <UserGreeting/>;
+        }
+        return <GuestGreeting/>; 
+      }
+
+      function LoginButton(props) {
+        return <button onClick={props.onClick}>Login</button>;
+      }
+
+      function LogoutButton(props) {
+        return <button onClick={props.onClick}>Logout</button>;
+      }
+
+      class LoginControl extends React.Component {
+        constructor(props) {
+          super(props);
+          this.handleLoginClick = this.handleLoginClick.bind(this);
+          this.handleLogoutClick = this.handleLogoutClick.bind(this);
+          this.state = {isLoggedIn: false};
+        }
+
+        handleLoginClick() {
+          this.setState({isLoggedIn: true});
+        }
+
+        handleLogoutClick() {
+          this.setState({isLoggedIn: false});
+        }
+
+        render() {
+          const isLoggedIn = this.state.isLoggedIn;
+
+          const button = isLoggedIn ? (
+            <LogoutButton onClick={this.handleLogoutClick}/>
+          ) : (
+            <LoginButton onClick={this.handleLoginClick}/>
+          );
+          
+          return (
+              <div>
+                <Greetings isLoggedIn={isLoggedIn}/>
+                {button}
+              </div>
+          );
+        }
+      }
+
+      function MailBox(props) {
+        const unreadMessages = props.unreadMessages;
+        return (
+          <div>
+            <h1>Hello!</h1>
+            {unreadMessages.length > 0 &&
+              <h2>
+                You have {unreadMessages.length} unread messages.
+              </h2>
+            }
+          </div>
+        );
+
+      }
+
+      function App() {
+        return (
+          <div>
+            <Clock/>
+            <Toggle/>
+            <LoginControl/>
+            <MailBox unreadMessages={['Hello', 'World']}/>
+          </div>
+        );
+      }
+
+      ReactDOM.render(
+        <App/>,
+        document.getElementById('root')
+      );
+    
+    </script>
+    <!--
+      Note: this page is a great way to try React but it's not suitable for production.
+      It slowly compiles JSX with Babel in the browser and uses a large development build of React.
+
+      To set up a production-ready React build environment, follow these instructions:
+      * https://reactjs.org/docs/add-react-to-a-new-app.html
+      * https://reactjs.org/docs/add-react-to-an-existing-app.html
+
+      You can also use React without JSX, in which case you can remove Babel:
+      * https://reactjs.org/docs/react-without-jsx.html
+      * https://reactjs.org/docs/cdn-links.html
+    -->
+  </body>
+</html>
